@@ -1,0 +1,5 @@
+{
+  "name": "ExamSense AI",
+  "description": "An intelligent exam strategy tool that cross-references your syllabus with past papers to identify high-ROI topics, required depth of study, and a prioritized preparation roadmap.",
+  "requestFramePermissions": []
+}
