@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     const questionsText = body.questionsText || "";
 
     const ai = new GoogleGenAI({
-      apiKey: process.env.AIzaSyBEpaUR2_Kbf2YNehw0RFxo87tQATwR4qs,
+      apiKey: process.env.API_KEY,
     });
 
     const prompt = `
