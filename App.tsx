@@ -1,7 +1,6 @@
 
 import React, { useState, useCallback, useRef } from 'react';
 import { ExamAnalysis } from './types';
-import { analyzeExamMaterial, FileData } from './services/geminiService';
 import { ResultView } from './components/ResultView';
 
 interface UploadedFile {
@@ -67,14 +66,16 @@ const App: React.FC = () => {
     setIsAnalyzing(true);
     setError(null);
     try {
-      const sParts: FileData[] = await Promise.all(syllabusFiles.map(async (f) => ({
-        inlineData: { data: await fileToBase64(f.file), mimeType: f.file.type }
-      })));
-      const qParts: FileData[] = await Promise.all(questionFiles.map(async (f) => ({
-        inlineData: { data: await fileToBase64(f.file), mimeType: f.file.type }
-      })));
-      const result = await analyzeExamMaterial(syllabus, questions, sParts, qParts);
-      setAnalysisResult(result);
+      const response = await fetch("/api/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          syllabusText: syllabus,
+          questionsText: questions,
+        }),
+      });
+      const data = await response.json();
+      console.log(data.output);
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred during analysis.");
     } finally {
