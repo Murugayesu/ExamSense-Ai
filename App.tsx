@@ -74,8 +74,8 @@ const App: React.FC = () => {
           questionsText: questions,
         }),
       });
-      const data = await response.json();
-      console.log(data.output);
+      const text = await response.text();
+      console.log(text);
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred during analysis.");
     } finally {

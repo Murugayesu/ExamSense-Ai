@@ -1,32 +1,41 @@
 import { GoogleGenAI } from "@google/genai";
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Only POST allowed" });
-  }
+  try {
+    if (req.method !== "POST") {
+      return res.status(405).json({ error: "Only POST allowed" });
+    }
 
-  const { syllabusText, questionsText } = req.body;
+    const body = req.body || {};
+    const syllabusText = body.syllabusText || "";
+    const questionsText = body.questionsText || "";
 
-  const ai = new GoogleGenAI({
-    apiKey: process.env.API_KEY, // comes from Vercel
-  });
+    const ai = new GoogleGenAI({
+      apiKey: process.env.API_KEY,
+    });
 
-  const prompt = `
+    const prompt = `
 Analyze the syllabus and past exam questions and create a study plan.
 
 SYLLABUS:
-${syllabusText || "None"}
+${syllabusText}
 
 QUESTIONS:
-${questionsText || "None"}
+${questionsText}
 `;
 
-  const result = await ai.models.generateContent({
-    model: "gemini-1.5-flash",
-    contents: [{ text: prompt }],
-  });
+    const result = await ai.models.generateContent({
+      model: "gemini-1.5-flash",
+      contents: [{ text: prompt }],
+    });
 
-  return res.status(200).json({
-    output: result.text,
-  });
+    return res.status(200).json({
+      output: result.text,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: "AI analysis failed",
+    });
+  }
 }
